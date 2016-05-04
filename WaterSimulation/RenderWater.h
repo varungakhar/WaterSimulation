@@ -16,9 +16,10 @@
     GLuint viewheight;
     GLuint vertexarray;
     GLKVector3 cameraposition,modelvector;
-    int indicesvalue,verticesvalue;
+    int indicesvalue,verticesvalue,curve;
    
     
+    GLuint buffer;
     
 }
 @property(nonatomic)float pitch,yaw,distance;

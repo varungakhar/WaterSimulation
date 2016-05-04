@@ -34,7 +34,8 @@
     renderwater.yaw=0;
     renderwater.pitch=0;
     renderwater.cameradirection=GLKVector3Make(0, 0, -1);
-    
+    renderwater.modelvector=GLKVector3Make(252, 0, -220);
+   
     
 }
 -(void)prepareOpenGL
@@ -101,20 +102,16 @@
 }
 -(void)keyDown:(NSEvent*)event
 {
-    unichar c = [[event charactersIgnoringModifiers] characterAtIndex:0];
+    unichar c = [[event charactersIgnoringModifiers]characterAtIndex:0];
     float speed=10;
     if (c==119||c==63232)
     {
-        renderwater.modelvector=GLKVector3Add(renderwater.modelvector,GLKVector3MultiplyScalar(renderwater.cameradirection, speed));
+        renderwater.modelvector=GLKVector3Add(renderwater.modelvector,GLKVector3MultiplyScalar(renderwater.cameradirection,speed));
     }
     else if (c==115||c==63233)
     {
         renderwater.modelvector=GLKVector3Add(renderwater.modelvector,GLKVector3MultiplyScalar(renderwater.cameradirection, -speed));
-        
     }
-    
-    
-    
     [self drawview];
 }
 -(void)mouseDragged:(NSEvent *)theEvent

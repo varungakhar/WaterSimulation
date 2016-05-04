@@ -48,7 +48,7 @@ static watervertex watervertices[waterdimensions*waterdimensions];
 }
 -(void)render
 {
-        glClearColor(0.9, 0.9, 0.9, 1);
+    glClearColor(0.9, 0.9, 0.9, 1);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, viewwidth, viewheight);
@@ -72,8 +72,88 @@ cameraposition.z=modelvector.z-zoffset;
     
     GLKMatrix4 model= GLKMatrix4Multiply(GLKMatrix4Identity, GLKMatrix4Multiply(prespective, lookat));
     
-
+  GLKVector4 lightposition=GLKVector4Make(400, 400,-400, 1);
+    
+    
+    glUniform4fv(glGetUniformLocation(waterprogram, "lightposition"),1, lightposition.v);
+     glUniform4fv(glGetUniformLocation(waterprogram, "eyeposition"),1, cameraposition.v);
+    
 glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m);
+    
+    
+    
+    double value = 0.0;
+    int k=0,m=0;
+    for (int i=0; i<waterdimensions; i=i+1)
+    {
+        for (int j=0; j<waterdimensions; j=j+1)
+        {
+         
+            
+            value=sinf(GLKMathDegreesToRadians(m*20))+sinf(GLKMathDegreesToRadians(i+curve)*20);
+            
+            
+            watervertices[k].position[0]=(float)j/((float)waterdimensions - 1)*800;
+            watervertices[k].position[1]=value*10;
+            watervertices[k].position[2]=-(float)i/((float)waterdimensions - 1)*800;
+            watervertices[k].position[3]=m*20;
+            
+            watervertices[k].color[0] = (float)j/((float)waterdimensions - 1);
+            watervertices[k].color[1] = (float)i/((float)waterdimensions - 1);
+            watervertices[k].color[2] = (float)j/((float)waterdimensions - 1);
+            watervertices[k].color[3] = (float)i/((float)waterdimensions - 1);
+            watervertices[k].normal[0]=0;
+            watervertices[k].normal[1]=1;
+            watervertices[k].normal[2]=0;
+            watervertices[k].normal[3]=1;
+            k++;
+            
+
+            if(m==9)
+            {
+                m=0;
+            }
+            else
+            {
+                m++;
+            }
+            
+            
+        }
+    }
+    
+    int l=0;
+    const int variable=(waterdimensions-1)*(waterdimensions-1)*2*3;
+    GLushort indices[variable];
+    for (int row=0; row<waterdimensions-1; row++)
+    {
+        for (int col=0; col<waterdimensions-1; col++)
+        {
+            indices[l++]=waterdimensions*row+col;
+            indices[l++]=waterdimensions*row+col+waterdimensions;
+            indices[l++]=waterdimensions*row+col+waterdimensions+1;
+            indices[l++]=waterdimensions*row+col;
+            indices[l++]=waterdimensions*row+col+waterdimensions+1;
+            indices[l++]=waterdimensions*row+col+1;
+        }
+    }
+    
+    
+    curve=curve%waterdimensions;
+    curve++;
+    
+    verticesvalue= sizeof(watervertices);
+    indicesvalue=sizeof(indices);
+    
+
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(watervertices)+sizeof(indices), 0, GL_STATIC_DRAW);
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(watervertices),watervertices);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(watervertices), sizeof(indices),indices);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+    
+    
 
   glDrawElements(GL_TRIANGLES,sizeof(GLbyte)*indicesvalue, GL_UNSIGNED_SHORT,(void*)(sizeof(GLbyte)*verticesvalue));
     
@@ -90,7 +170,7 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
 -(void)water
 {
     double value = 0.0;
-    int k=0,m=0;
+    int k=0;
     for (int i=0; i<waterdimensions; i=i+1)
     {
         for (int j=0; j<waterdimensions; j=j+1)
@@ -136,7 +216,7 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
     verticesvalue= sizeof(watervertices);
     indicesvalue=sizeof(indices);
     
-    GLuint buffer;
+
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(watervertices)+sizeof(indices), 0, GL_STATIC_DRAW);
