@@ -109,7 +109,10 @@ glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
 }
 -(void)vao
 {
-
+    glGenVertexArrays(1, &vertexarray);
+    glBindVertexArray(vertexarray);
+    
+    
     
 }
 

@@ -14,6 +14,7 @@
 {
     GLuint viewwidth;
     GLuint viewheight;
+    GLuint vertexarray;
 }
 -(instancetype)initwithframebuffer:(NSRect)size;
 - (void)resizeWithWidth:(NSRect)size;
