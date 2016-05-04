@@ -12,6 +12,10 @@
 		1588112E1CD9BCB300325C5C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1588112D1CD9BCB300325C5C /* ViewController.m */; };
 		158811301CD9BCB300325C5C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1588112F1CD9BCB300325C5C /* Assets.xcassets */; };
 		158811331CD9BCB400325C5C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 158811311CD9BCB400325C5C /* Main.storyboard */; };
+		1588113C1CD9BDA600325C5C /* OpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1588113B1CD9BDA600325C5C /* OpenGLView.m */; };
+		1588113F1CD9C33500325C5C /* RenderWater.m in Sources */ = {isa = PBXBuildFile; fileRef = 1588113E1CD9C33500325C5C /* RenderWater.m */; };
+		158811411CD9C80500325C5C /* watervertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 158811401CD9C80500325C5C /* watervertex.glsl */; };
+		158811431CD9C81700325C5C /* waterfragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 158811421CD9C81700325C5C /* waterfragment.glsl */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +28,12 @@
 		1588112F1CD9BCB300325C5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		158811321CD9BCB400325C5C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		158811341CD9BCB400325C5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1588113A1CD9BDA600325C5C /* OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
+		1588113B1CD9BDA600325C5C /* OpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLView.m; sourceTree = "<group>"; };
+		1588113D1CD9C33500325C5C /* RenderWater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderWater.h; sourceTree = "<group>"; };
+		1588113E1CD9C33500325C5C /* RenderWater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RenderWater.m; sourceTree = "<group>"; };
+		158811401CD9C80500325C5C /* watervertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = watervertex.glsl; sourceTree = "<group>"; };
+		158811421CD9C81700325C5C /* waterfragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = waterfragment.glsl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +70,12 @@
 				158811271CD9BCB300325C5C /* AppDelegate.m */,
 				1588112C1CD9BCB300325C5C /* ViewController.h */,
 				1588112D1CD9BCB300325C5C /* ViewController.m */,
+				1588113A1CD9BDA600325C5C /* OpenGLView.h */,
+				1588113B1CD9BDA600325C5C /* OpenGLView.m */,
+				1588113D1CD9C33500325C5C /* RenderWater.h */,
+				1588113E1CD9C33500325C5C /* RenderWater.m */,
+				158811401CD9C80500325C5C /* watervertex.glsl */,
+				158811421CD9C81700325C5C /* waterfragment.glsl */,
 				1588112F1CD9BCB300325C5C /* Assets.xcassets */,
 				158811311CD9BCB400325C5C /* Main.storyboard */,
 				158811341CD9BCB400325C5C /* Info.plist */,
@@ -134,7 +150,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				158811301CD9BCB300325C5C /* Assets.xcassets in Resources */,
+				158811431CD9C81700325C5C /* waterfragment.glsl in Resources */,
 				158811331CD9BCB400325C5C /* Main.storyboard in Resources */,
+				158811411CD9C80500325C5C /* watervertex.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +166,8 @@
 				1588112E1CD9BCB300325C5C /* ViewController.m in Sources */,
 				1588112B1CD9BCB300325C5C /* main.m in Sources */,
 				158811281CD9BCB300325C5C /* AppDelegate.m in Sources */,
+				1588113C1CD9BDA600325C5C /* OpenGLView.m in Sources */,
+				1588113F1CD9C33500325C5C /* RenderWater.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
