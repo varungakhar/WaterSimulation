@@ -12,10 +12,17 @@
 #import <GLKit/GLKit.h>
 @interface RenderWater : NSObject
 {
-    GLuint viewwidth;
+    GLuint viewwidth,waterprogram;
     GLuint viewheight;
     GLuint vertexarray;
+    GLKVector3 cameraposition,modelvector;
+    int indicesvalue,verticesvalue;
+   
+    
+    
 }
+@property(nonatomic)float pitch,yaw,distance;
+@property(nonatomic)GLKVector3 modelvector,cameradirection ;
 -(instancetype)initwithframebuffer:(NSRect)size;
 - (void)resizeWithWidth:(NSRect)size;
 -(void)render;

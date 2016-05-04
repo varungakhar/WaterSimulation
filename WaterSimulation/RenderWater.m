@@ -10,6 +10,8 @@
 
 @implementation RenderWater
 
+@synthesize modelvector;
+
 typedef struct
 {
     float position[4];
@@ -33,7 +35,9 @@ static watervertex watervertices[waterdimensions*waterdimensions];
     viewheight=size.size.height;
     glEnable(GL_DEPTH_TEST);
     
-    [self createprogram:@"watervertex" fragment:@"waterfragment"];
+  waterprogram=  [self createprogram:@"watervertex" fragment:@"waterfragment"];
+    [self water];
+    
     
     return self;
 }
@@ -44,12 +48,45 @@ static watervertex watervertices[waterdimensions*waterdimensions];
 }
 -(void)render
 {
-    glClearColor(0, 0, 1, 1);
+        glClearColor(0.9, 0.9, 0.9, 1);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, viewwidth, viewheight);
-}
 
+   
+    float horizontaldistance=_distance*cos(GLKMathDegreesToRadians(_pitch));
+    float verticaldistance=_distance*sin(GLKMathDegreesToRadians(_pitch));
+    
+    float xoffset=sin(GLKMathDegreesToRadians(180-_yaw))*horizontaldistance;
+    float zoffset=cos(GLKMathDegreesToRadians(180-_yaw))*horizontaldistance;
+
+    
+cameraposition.x=modelvector.x-xoffset;
+cameraposition.y=verticaldistance;
+cameraposition.z=modelvector.z-zoffset;
+    
+    glBindVertexArray(vertexarray);
+    GLKMatrix4 prespective=GLKMatrix4MakePerspective(GLKMathDegreesToRadians(60), viewwidth/viewheight, 0.1, 3000);
+    
+    GLKMatrix4 lookat=[self camera];
+    
+    GLKMatrix4 model= GLKMatrix4Multiply(GLKMatrix4Identity, GLKMatrix4Multiply(prespective, lookat));
+    
+
+glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m);
+
+  glDrawElements(GL_TRIANGLES,sizeof(GLbyte)*indicesvalue, GL_UNSIGNED_SHORT,(void*)(sizeof(GLbyte)*verticesvalue));
+    
+}
+-(GLKMatrix4)camera
+{
+    GLKMatrix4 matrix=GLKMatrix4Identity;
+    matrix=GLKMatrix4Rotate(matrix,GLKMathDegreesToRadians(_pitch),1,0,0);
+    matrix=GLKMatrix4Rotate(matrix,GLKMathDegreesToRadians(_yaw),0,1,0);
+    GLKVector3 camera=GLKVector3MultiplyScalar(cameraposition, -1);
+    matrix= GLKMatrix4Translate(matrix, camera.x, camera.y, camera.z);
+    return matrix;
+}
 -(void)water
 {
     double value = 0.0;
@@ -96,6 +133,8 @@ static watervertex watervertices[waterdimensions*waterdimensions];
         }
     }
     
+    verticesvalue= sizeof(watervertices);
+    indicesvalue=sizeof(indices);
     
     GLuint buffer;
     glGenBuffers(1, &buffer);
@@ -105,18 +144,27 @@ static watervertex watervertices[waterdimensions*waterdimensions];
 glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(watervertices),watervertices);
 glBufferSubData(GL_ARRAY_BUFFER, sizeof(watervertices), sizeof(indices),indices);
 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+    
+    [self vao:buffer];
+    
+    
 
 }
--(void)vao
+-(void)vao:(GLuint)buffer
 {
-    glGenVertexArrays(1, &vertexarray);
-    glBindVertexArray(vertexarray);
+glGenVertexArrays(1, &vertexarray);
+glBindVertexArray(vertexarray);
+glEnableVertexAttribArray(glGetAttribLocation(waterprogram, "position"));
+glEnableVertexAttribArray(glGetAttribLocation(waterprogram, "color"));
+glEnableVertexAttribArray(glGetAttribLocation(waterprogram, "normals"));
     
-    
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glVertexAttribPointer(glGetAttribLocation(waterprogram, "position"), 4, GL_FLOAT, GL_FALSE, sizeof(float)*12, 0);
+    glVertexAttribPointer(glGetAttribLocation(waterprogram, "color"),4, GL_FLOAT, GL_FALSE, sizeof(float)*12,(GLvoid*)(sizeof(float)*4));
+    glVertexAttribPointer(glGetAttribLocation(waterprogram, "normals"),4, GL_FLOAT, GL_FALSE, sizeof(float)*12,(GLvoid*)(sizeof(float)*8));
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
     
 }
-
-
 -(GLuint)createprogram:(NSString *)vertex fragment:(NSString*)fragment
 {
 GLuint program=glCreateProgram();

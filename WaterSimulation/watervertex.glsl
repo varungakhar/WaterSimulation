@@ -4,8 +4,13 @@ in vec4 position;
 in vec4 color;
 in vec4 normals;
 
+out vec4 outcolor;
+
+uniform mat4 mvp;
+
 void main()
 {
-
-    gl_Position=position;
+    outcolor=color;
+    
+    gl_Position=mvp*position;
 }

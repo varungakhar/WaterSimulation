@@ -30,6 +30,10 @@
     NSRect rect=[self bounds];
     
     renderwater=[[RenderWater alloc]initwithframebuffer:rect];
+    renderwater.distance=200;
+    renderwater.yaw=0;
+    renderwater.pitch=0;
+    renderwater.cameradirection=GLKVector3Make(0, 0, -1);
     
     
 }
@@ -95,5 +99,67 @@
 
     
 }
+-(void)keyDown:(NSEvent*)event
+{
+    unichar c = [[event charactersIgnoringModifiers] characterAtIndex:0];
+    float speed=10;
+    if (c==119||c==63232)
+    {
+        renderwater.modelvector=GLKVector3Add(renderwater.modelvector,GLKVector3MultiplyScalar(renderwater.cameradirection, speed));
+    }
+    else if (c==115||c==63233)
+    {
+        renderwater.modelvector=GLKVector3Add(renderwater.modelvector,GLKVector3MultiplyScalar(renderwater.cameradirection, -speed));
+        
+    }
+    
+    
+    
+    [self drawview];
+}
+-(void)mouseDragged:(NSEvent *)theEvent
+{
+    
+    CGFloat delx=theEvent.deltaX;
+    CGFloat dely=theEvent.deltaY;
 
+    
+    renderwater.yaw+=delx/20;
+    renderwater.pitch+=dely/20;
+    
+    if (renderwater.pitch>89)
+    {
+        renderwater.pitch=89;
+    }
+    
+    GLKMatrix4 matrix=GLKMatrix4Identity;
+    //
+    matrix=GLKMatrix4Rotate(matrix,GLKMathDegreesToRadians(-delx/20), 0, 1, 0);
+    //  matrix=GLKMatrix4Rotate(matrix,GLKMathDegreesToRadians(-dely/20), 1, 0, 0);
+    
+    GLKVector4 direction;
+    
+    direction=GLKMatrix4MultiplyVector4(matrix,GLKVector4Make(renderwater.cameradirection.x, renderwater.cameradirection.y, renderwater.cameradirection.z, 0));
+    direction=GLKVector4Normalize(direction);
+    
+    
+    renderwater.cameradirection=GLKVector3Make(direction.x, direction.y, direction.z);
+    
+
+    [self drawview];
+    
+}
+-(void)scrollWheel:(NSEvent *)theEvent
+{
+    
+    CGFloat dely=theEvent.deltaY;
+    
+    renderwater.distance-=dely;
+    
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
 @end
