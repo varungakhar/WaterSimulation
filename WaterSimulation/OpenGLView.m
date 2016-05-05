@@ -27,6 +27,7 @@
     [self setOpenGLContext:context];
     [[self openGLContext] makeCurrentContext];
     
+    
     NSRect rect=[self bounds];
     
     renderwater=[[RenderWater alloc]initwithframebuffer:rect];

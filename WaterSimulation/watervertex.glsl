@@ -26,10 +26,10 @@ void main()
 vec4 negativevertexposition;
 negativevertexposition=normalize(reflect(-vertexposition,normalize(normals)));
     
+    
     vec4 eyevertexposition=eyeposition-vec4(position.xyz,1.0);
     eyevertexposition=normalize(eyevertexposition);
     
-   
     float specularity=dot(negativevertexposition,eyevertexposition);
     
     specularity=clamp(specularity,0.0,1.0);

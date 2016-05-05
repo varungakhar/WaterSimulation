@@ -17,9 +17,5 @@ void main()
         fragcolor=vec4(0.0,0.3,0.5,1.0)*diffusespecular;
     }
     
-  
-  
-    
-    
-    
+
 }

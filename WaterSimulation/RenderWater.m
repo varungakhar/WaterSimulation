@@ -78,6 +78,7 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
     
     
     
+    
     double value = 0.0;
     int k=0,m=0;
     for (int z=0; z<waterdimensions; z=z+1)
