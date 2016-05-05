@@ -30,9 +30,7 @@ static watervertex watervertices[waterdimensions*waterdimensions];
 -(instancetype)initwithframebuffer:(NSRect)size
 {
     
-//    s19190095.onlinehome-server.com
-//    Login : Developer
-//    Password: Kkf911
+
 
     
     
