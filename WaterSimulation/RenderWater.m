@@ -24,15 +24,8 @@ const int waterdimensions=90;
 
 static watervertex watervertices[waterdimensions*waterdimensions];
 
-
-
-
 -(instancetype)initwithframebuffer:(NSRect)size
 {
-    
-
-
-    
     
     viewwidth=size.size.width;
     viewheight=size.size.height;
@@ -75,7 +68,7 @@ cameraposition.z=modelvector.z-zoffset;
     
     GLKMatrix4 model= GLKMatrix4Multiply(GLKMatrix4Identity, GLKMatrix4Multiply(prespective, lookat));
     
-  GLKVector4 lightposition=GLKVector4Make(400, 400,-400, 1);
+  GLKVector4 lightposition=GLKVector4Make(400, 400,100, 1);
     
     
     glUniform4fv(glGetUniformLocation(waterprogram, "lightposition"),1, lightposition.v);
@@ -87,24 +80,23 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
     
     double value = 0.0;
     int k=0,m=0;
-    for (int i=0; i<waterdimensions; i=i+1)
+    for (int z=0; z<waterdimensions; z=z+1)
     {
-        for (int j=0; j<waterdimensions; j=j+1)
+        for (int x=0; x<waterdimensions; x=x+1)
         {
          
             
-            value=sinf(GLKMathDegreesToRadians(m*20))+sinf(GLKMathDegreesToRadians(i+curve)*20);
-            
-            
-            watervertices[k].position[0]=(float)j/((float)waterdimensions - 1)*800;
+            value=sinf(GLKMathDegreesToRadians(m*20))+sinf(GLKMathDegreesToRadians(z+curve)*20);
+        
+            watervertices[k].position[0]=(float)x/((float)waterdimensions - 1)*800;
             watervertices[k].position[1]=value*10;
-            watervertices[k].position[2]=-(float)i/((float)waterdimensions - 1)*800;
+            watervertices[k].position[2]=-(float)z/((float)waterdimensions - 1)*800;
             watervertices[k].position[3]=m*20;
             
-            watervertices[k].color[0] = (float)j/((float)waterdimensions - 1);
-            watervertices[k].color[1] = (float)i/((float)waterdimensions - 1);
-            watervertices[k].color[2] = (float)j/((float)waterdimensions - 1);
-            watervertices[k].color[3] = (float)i/((float)waterdimensions - 1);
+            watervertices[k].color[0] = (float)x/((float)waterdimensions - 1);
+            watervertices[k].color[1] = (float)z/((float)waterdimensions - 1);
+            watervertices[k].color[2] = (float)x/((float)waterdimensions - 1);
+            watervertices[k].color[3] = (float)z/((float)waterdimensions - 1);
             watervertices[k].normal[0]=0;
             watervertices[k].normal[1]=1;
             watervertices[k].normal[2]=0;
@@ -135,9 +127,16 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
             indices[l++]=waterdimensions*row+col;
             indices[l++]=waterdimensions*row+col+waterdimensions;
             indices[l++]=waterdimensions*row+col+waterdimensions+1;
+            
+            [self calculatenormals:waterdimensions*row+col b:waterdimensions*row+col+waterdimensions c:waterdimensions*row+col+waterdimensions+1];
+            
+            
             indices[l++]=waterdimensions*row+col;
             indices[l++]=waterdimensions*row+col+waterdimensions+1;
             indices[l++]=waterdimensions*row+col+1;
+            
+             [self calculatenormals:waterdimensions*row+col b:waterdimensions*row+col+waterdimensions+1 c:waterdimensions*row+col+1];
+            
         }
     }
     
@@ -159,6 +158,52 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
     
 
   glDrawElements(GL_TRIANGLES,sizeof(GLbyte)*indicesvalue, GL_UNSIGNED_SHORT,(void*)(sizeof(GLbyte)*verticesvalue));
+    
+}
+-(void)calculatenormals:(int)a b:(int)b c:(int)c
+{
+     GLKVector3 firstvector;
+     firstvector.x =  watervertices[a].position[0];
+     firstvector.y =  watervertices[a].position[1];
+     firstvector.z =  watervertices[a].position[2];
+    
+    GLKVector3 secondvector;
+    secondvector.x =  watervertices[b].position[0];
+    secondvector.y =  watervertices[b].position[1];
+    secondvector.z =  watervertices[b].position[2];
+    
+    GLKVector3 thirdvector;
+    thirdvector.x =  watervertices[c].position[0];
+    thirdvector.y =  watervertices[c].position[1];
+    thirdvector.z =  watervertices[c].position[2];
+    
+    
+    GLKVector3 uvector,vvector;
+    
+    uvector=GLKVector3Subtract(secondvector, firstvector);
+     vvector=GLKVector3Subtract(thirdvector, firstvector);
+    
+    GLKVector3 normals=GLKVector3CrossProduct(vvector, uvector);
+   
+    normals=GLKVector3Normalize(normals);
+    
+    
+    watervertices[a].normal[0]=normals.x;
+    watervertices[a].normal[1]=normals.y;
+    watervertices[a].normal[2]=normals.z;
+    
+    watervertices[b].normal[0]=normals.x;
+    watervertices[b].normal[1]=normals.y;
+    watervertices[b].normal[2]=normals.z;
+    
+    watervertices[c].normal[0]=normals.x;
+    watervertices[c].normal[1]=normals.y;
+    watervertices[c].normal[2]=normals.z;
+    
+    
+   // NSLog(@"%f %f %f",normals.x,normals.y,normals.z);
+    
+    
     
 }
 -(GLKMatrix4)camera
