@@ -77,7 +77,7 @@ cameraposition.z=modelvector.z-zoffset;
     
     glUniform4fv(glGetUniformLocation(waterprogram, "lightposition"),1, lightposition.v);
      glUniform4fv(glGetUniformLocation(waterprogram, "eyeposition"),1, cameraposition.v);
-    
+
 glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m);
     
     
