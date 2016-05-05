@@ -20,7 +20,7 @@ typedef struct
     
 }watervertex;
 
-const int waterdimensions=3;
+const int waterdimensions=90;
 
 static watervertex watervertices[waterdimensions*waterdimensions];
 
@@ -99,7 +99,7 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
             }
             else if (x%1==0&&z%1==0)
             {
-           value= 20;
+        value=  ((float)arc4random() / ARC4RANDOM_MAX);;
             }
             else
             {
@@ -107,7 +107,7 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
             }
             
             watervertices[k].position[0]=(float)x/((float)waterdimensions - 1)*800;
-            watervertices[k].position[1]=value*10;
+            watervertices[k].position[1]=value*5;
             watervertices[k].position[2]=-(float)z/((float)waterdimensions - 1)*800;
             watervertices[k].position[3]=m*20;
             
@@ -145,7 +145,7 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
         for (int col=0; col<waterdimensions-1; col++)
         {
             
-            if(changetriangle==YES)
+            if(row%2==0&&col%2==0)
             {
                 indices[l++]=waterdimensions*row+col;
                 indices[l++]=waterdimensions*row+col+waterdimensions;
@@ -167,13 +167,11 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
             {
                 changetriangle=YES;
                 
-                
-                
+        
                 indices[l++]=waterdimensions*row+col;
                 indices[l++]=waterdimensions*row+col+1;
                 indices[l++]=waterdimensions*row+col+waterdimensions;
-                
-                
+        
                 [self calculatenormals:waterdimensions*row+col b:waterdimensions*row+col+waterdimensions c:waterdimensions*row+col+waterdimensions+1];
                 
                 indices[l++]=waterdimensions*row+col+waterdimensions;
