@@ -5,7 +5,7 @@
 //  Created by KindleBit on 04/05/16.
 //  Copyright © 2016 KindleBit. All rights reserved.
 //
-
+#define ARC4RANDOM_MAX      0x100000000
 #import "RenderWater.h"
 
 @implementation RenderWater
@@ -20,7 +20,7 @@ typedef struct
     
 }watervertex;
 
-const int waterdimensions=90;
+const int waterdimensions=3;
 
 static watervertex watervertices[waterdimensions*waterdimensions];
 
@@ -77,18 +77,35 @@ cameraposition.z=modelvector.z-zoffset;
 glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m);
     
     
-    
-    
     double value = 0.0;
     int k=0,m=0;
     for (int z=0; z<waterdimensions; z=z+1)
     {
         for (int x=0; x<waterdimensions; x=x+1)
         {
-         
+    
             
             value=sinf(GLKMathDegreesToRadians(m*20))+sinf(GLKMathDegreesToRadians(z+curve)*20);
-        
+            
+            
+            
+            if (z%2==0)
+            {
+                value=0;
+            }
+            else if(x%2==0)
+            {
+                value=0;
+            }
+            else if (x%1==0&&z%1==0)
+            {
+           value= 20;
+            }
+            else
+            {
+                value=0;
+            }
+            
             watervertices[k].position[0]=(float)x/((float)waterdimensions - 1)*800;
             watervertices[k].position[1]=value*10;
             watervertices[k].position[2]=-(float)z/((float)waterdimensions - 1)*800;
@@ -119,31 +136,66 @@ glUniformMatrix4fv(glGetUniformLocation(waterprogram, "mvp"),1,GL_FALSE, model.m
     }
     
     int l=0;
+    BOOL changetriangle=YES;
+    
     const int variable=(waterdimensions-1)*(waterdimensions-1)*2*3;
     GLushort indices[variable];
     for (int row=0; row<waterdimensions-1; row++)
     {
         for (int col=0; col<waterdimensions-1; col++)
         {
-            indices[l++]=waterdimensions*row+col;
-            indices[l++]=waterdimensions*row+col+waterdimensions;
-            indices[l++]=waterdimensions*row+col+waterdimensions+1;
             
-            [self calculatenormals:waterdimensions*row+col b:waterdimensions*row+col+waterdimensions c:waterdimensions*row+col+waterdimensions+1];
+            if(changetriangle==YES)
+            {
+                indices[l++]=waterdimensions*row+col;
+                indices[l++]=waterdimensions*row+col+waterdimensions;
+                indices[l++]=waterdimensions*row+col+waterdimensions+1;
+                
+                [self calculatenormals:waterdimensions*row+col b:waterdimensions*row+col+waterdimensions c:waterdimensions*row+col+waterdimensions+1];
+                
+                indices[l++]=waterdimensions*row+col;
+                indices[l++]=waterdimensions*row+col+waterdimensions+1;
+                indices[l++]=waterdimensions*row+col+1;
+                
+                [self calculatenormals:waterdimensions*row+col b:waterdimensions*row+col+waterdimensions+1 c:waterdimensions*row+col+1];
+                
+                changetriangle=NO;
+                
+                
+            }
+            else
+            {
+                changetriangle=YES;
+                
+                
+                
+                indices[l++]=waterdimensions*row+col;
+                indices[l++]=waterdimensions*row+col+1;
+                indices[l++]=waterdimensions*row+col+waterdimensions;
+                
+                
+                [self calculatenormals:waterdimensions*row+col b:waterdimensions*row+col+waterdimensions c:waterdimensions*row+col+waterdimensions+1];
+                
+                indices[l++]=waterdimensions*row+col+waterdimensions;
+                indices[l++]=waterdimensions*row+col+waterdimensions+1;
+                indices[l++]=waterdimensions*row+col+1;
+                
+                [self calculatenormals:waterdimensions*row+col b:waterdimensions*row+col+waterdimensions+1 c:waterdimensions*row+col+1];
+                
+                
+            }
+            
+           
             
             
-            indices[l++]=waterdimensions*row+col;
-            indices[l++]=waterdimensions*row+col+waterdimensions+1;
-            indices[l++]=waterdimensions*row+col+1;
             
-             [self calculatenormals:waterdimensions*row+col b:waterdimensions*row+col+waterdimensions+1 c:waterdimensions*row+col+1];
             
         }
     }
     
-    
+      curve++;
     curve=curve%waterdimensions;
-    curve++;
+  
     
     verticesvalue= sizeof(watervertices);
     indicesvalue=sizeof(indices);
